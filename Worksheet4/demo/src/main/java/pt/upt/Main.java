@@ -1,25 +1,39 @@
 package pt.upt;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-public class Main 
-{
-    public static void main( String[] args )
-    {
+public class Main {
+    public static void main(String[] args) {
         System.out.println("Olá, Maven!");
-        double[] values = new double[] {65, 51, 16, 11, 6519, 191, 0, 98, 19854, 1, 32};
+        System.out.println("Introduz números separados por vírgulas (ex: 10, 3.5, -2, 7):");
 
-        DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
-        for (double v : values) {
-            descriptiveStatistics.addValue(v);
+        Scanner sc = new Scanner(System.in);
+        String line = sc.nextLine().trim();
+        if (line.isEmpty()) {
+            System.out.println("Não introduziste nada. A sair...");
+            return;
         }
 
-        double mean = descriptiveStatistics.getMean();
-        double median = descriptiveStatistics.getPercentile(50);
-        double standardDeviation = descriptiveStatistics.getStandardDeviation();
+        double[] values;
+        try {
+            values = Arrays.stream(line.split(","))
+                    .map(String::trim)
+                    .mapToDouble(Double::parseDouble)
+                    .toArray();
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida. Usa apenas números e vírgulas.");
+            return;
+        }
 
-        System.out.println("Mean: " + mean);
-        System.out.println("Median: " + median);
-        System.out.println("Standard Deviation: " + standardDeviation);
+        DescriptiveStatistics ds = new DescriptiveStatistics();
+        for (double v : values) ds.addValue(v);
+
+        System.out.println("Mean: " + ds.getMean());
+        System.out.println("Median: " + ds.getPercentile(50));
+        System.out.println("Standard Deviation: " + ds.getStandardDeviation());
     }
 }
+
